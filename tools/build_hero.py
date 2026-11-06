@@ -10,6 +10,7 @@ import base64
 import io
 import json
 import math
+import sys
 from pathlib import Path
 
 from fontTools import subset
@@ -17,8 +18,8 @@ from fontTools.ttLib import TTFont
 from PIL import Image
 
 HERE = Path(__file__).parent
-OUT = HERE.parent / "profile" / "assets"
-DATA = json.loads((HERE / "surface.json").read_text())
+OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else HERE.parent / "profile" / "assets"
+DATA = json.loads(Path(sys.argv[1] if len(sys.argv) > 1 else HERE / "surface.json").read_text())
 FAST, SLOW, SHARPE = DATA["fast"], DATA["slow"], DATA["sharpe"]
 N, M = len(FAST), len(SLOW)
 
@@ -31,12 +32,14 @@ THEMES = {
                   ramp=["#dce3fa", "#a3b6f8", "#5b7ff5", "#2238a0"], mesh="#ffffff", skirt="#eceef6"),
 }
 
-LOOP = 14.0
+LOOP = 10.0
 CX, CY, DX, DY, ZS = 600.0, 132.0, 12.3, 6.3, 68.0
 
 
 def project(i, j, z=0.0):
-    return CX + (i - j) * DX, CY + (i + j) * DY - z * ZS
+    # the footprint on screen stays the same whatever the size of the grid
+    u, v = i * 14 / (M - 1), j * 14 / (N - 1)
+    return CX + (u - v) * DX, CY + (u + v) * DY - z * ZS
 
 
 def ramp(colors, t):
@@ -77,7 +80,7 @@ def pct(t):
     return f"{100 * t / LOOP:.2f}".rstrip("0").rstrip(".")
 
 
-def fade(name, start, dur=0.5):
+def fade(name, start, dur=0.3):
     return (f"@keyframes {name}{{0%,{pct(start)}%{{opacity:0}}{pct(start + dur)}%,94%{{opacity:1}}"
             f"100%{{opacity:0}}}}.{name}{{animation:{name} {LOOP:g}s linear infinite}}")
 
@@ -93,13 +96,12 @@ def build(theme):
 
     # floor: Sharpe = 0, so the height of the surface above it is the real number
     floor = []
-    for k in range(N):
-        a, b = project(0, k), project(M - 1, k)
+    for t in range(15):
+        a, b = project(0, t * (N - 1) / 14), project(M - 1, t * (N - 1) / 14)
         floor.append(f'<path d="M{a[0]:.1f} {a[1]:.1f}L{b[0]:.1f} {b[1]:.1f}"/>')
-    for k in range(M):
-        a, b = project(k, 0), project(k, N - 1)
+        a, b = project(t * (M - 1) / 14, 0), project(t * (M - 1) / 14, N - 1)
         floor.append(f'<path d="M{a[0]:.1f} {a[1]:.1f}L{b[0]:.1f} {b[1]:.1f}"/>')
-    css.append(fade("fl", 0.2))
+    css.append(fade("fl", 0.1))
     body.append(f'<g class="fl" stroke="{c["floor"]}" stroke-width=".6" fill="none">{"".join(floor)}</g>')
 
     # skirt under the two front edges, so the surface reads as a solid
@@ -110,7 +112,7 @@ def build(theme):
 
     # the cells rise in the engine's enumeration order: fast, then slow
     cells = []
-    start, span = 1.0, 5.0
+    start, span = 0.3, 2.0
     total = (N - 1) * (M - 1)
     for j in range(N - 1):
         for i in range(M - 1):
@@ -123,17 +125,17 @@ def build(theme):
             name = f"q{n}"
             css.append(
                 f"@keyframes {name}{{0%,{pct(t0)}%{{opacity:0;transform:translateY({mean * ZS:.0f}px)}}"
-                f"{pct(t0 + .55)}%,94%{{opacity:1;transform:none}}100%{{opacity:0;transform:none}}}}"
+                f"{pct(t0 + .3)}%,94%{{opacity:1;transform:none}}100%{{opacity:0;transform:none}}}}"
                 f".{name}{{animation:{name} {LOOP:g}s cubic-bezier(.2,.7,.2,1) infinite}}")
             cells.append((i + j, f'<polygon class="{name}" fill="{ramp(c["ramp"], (mean - lo) / (hi - lo))}" points="{poly(pts)}"/>'))
     cells.sort(key=lambda x: x[0])
 
-    css.append(fade("sk", 6.1))
-    css.append(fade("ax", 6.3))
-    css.append(fade("co", .4))
-    css.append(fade("cp", 6.5))
+    css.append(fade("sk", 2.5))
+    css.append(fade("ax", 2.6))
+    css.append(fade("co", .2))
+    css.append(fade("cp", 2.7))
 
-    body.append(f'<g stroke="{c["mesh"]}" stroke-width=".5" stroke-opacity=".7">{"".join(x[1] for x in cells)}</g>')
+    body.append(f'<g stroke="{c["mesh"]}" stroke-width="{min(.5, 7 / max(N, M)):.2f}" stroke-opacity=".7">{"".join(x[1] for x in cells)}</g>')
     body.append(f'<g class="sk" fill="{c["skirt"]}" stroke="{c["floor"]}" stroke-width=".6">'
                 f'<polygon points="{skirt_l}"/><polygon points="{skirt_r}"/></g>')
 
@@ -151,7 +153,7 @@ def build(theme):
                 f'mbt.run_sweep(strategy, {{"fast": ..., "slow": ...}}, config, store)</text>')
     body.append(
         f'<g class="cp mono" font-size="9.5" fill="{c["dim"]}" text-anchor="end">'
-        f'<text x="775" y="331">{N * M} real backtests, not a drawing. EMA crossover, BTCUSDT 1h,</text>'
+        f'<text x="775" y="331">{N * M:,} real backtests, not a drawing. EMA crossover, BTCUSDT 1h,</text>'
         f'<text x="775" y="344">2023 to 2024, fees and slippage on. Height = in-sample Sharpe.</text></g>')
 
     (lw, lh), lg = logo(c["text"])
@@ -178,7 +180,7 @@ def build(theme):
         "Bars Trades L2 book MBO Options")))
     mono_chars = "".join(sorted(set(
         'mbt.run_sweep(strategy, {"fast": ..., "slow": ...}, config, store) '
-        f"{N * M} real backtests, not a drawing. EMA crossover, BTCUSDT 1h, 2023 to 2024, fees and slippage on. "
+        f"{N * M:,} real backtests, not a drawing. EMA crossover, BTCUSDT 1h, 2023 to 2024, fees and slippage on. "
         f"Height = in-sample Sharpe. slow EMA fast 0123456789")))
     fonts = font(HERE / "fonts" / "inter.woff2", "Inter", text_chars) + font(
         HERE / "fonts" / "jbmono.woff2", "JetBrains Mono", mono_chars)

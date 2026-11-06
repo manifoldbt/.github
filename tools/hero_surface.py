@@ -2,6 +2,9 @@
 
     pip install "manifoldbt[pandas]"
     python hero_surface.py surface.json
+
+Community sweeps stop at 256 combinations: this grid of 1,000 needs a paid licence,
+or shrink FAST and SLOW.
 """
 import json
 import sys
@@ -10,8 +13,8 @@ import manifoldbt as mbt
 from manifoldbt.helpers import Interval, Slippage, time_range
 from manifoldbt.indicators import close, ema
 
-FAST = list(range(5, 50, 3))     # 15 values
-SLOW = list(range(60, 270, 14))  # 15 values
+FAST = list(range(5, 55, 2))     # 25 values
+SLOW = list(range(60, 260, 5))   # 40 values
 
 store = mbt.ingest(provider="binance", symbol="BTCUSDT", symbol_id=1, interval="1h",
                    start="2023-01-01T00:00:00Z", end="2025-01-01T00:00:00Z")
