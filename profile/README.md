@@ -2,7 +2,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/manifoldbt/.github/HEAD/profile/assets/hero-dark.svg">
-  <img alt="Manifold-BT: sweep the grid, read the surface, check every fill. The Sharpe surface of 225 real EMA crossover backtests on BTCUSDT, with its highest cell marked on the edge of the grid." src="https://raw.githubusercontent.com/manifoldbt/.github/HEAD/profile/assets/hero-light.svg" width="800">
+  <img alt="Manifold-BT: sweep the grid, read the surface, check every fill. The Sharpe surface of 225 real EMA crossover backtests on BTCUSDT: read the plateau, not the peak." src="https://raw.githubusercontent.com/manifoldbt/.github/HEAD/profile/assets/hero-light.svg" width="800">
 </picture>
 
 [Website](https://www.manifoldbt.com) · [Docs](https://www.manifoldbt.com/documentation) · [Quick start](https://github.com/manifoldbt/manifoldbt#quick-start) · [Benchmarks](https://www.manifoldbt.com/benchmarks) · [Examples](https://github.com/manifoldbt/manifoldbt/tree/master/examples) · [Pricing](https://www.manifoldbt.com/#pricing) · [Discord](https://discord.gg/bvU6Wjc72d)

@@ -147,14 +147,9 @@ def build(theme):
         f'<text transform="translate({lx - 5:.1f} {ly + 14:.1f}) rotate({ang:.1f})">slow EMA {SLOW[0]} to {SLOW[-1]}</text>'
         f'<text transform="translate({rx + 5:.1f} {ry + 14:.1f}) rotate({-ang:.1f})">fast EMA {FAST[0]} to {FAST[-1]}</text></g>')
 
-    # the highest cell, and where it sits
-    best = max((SHARPE[j][i], i, j) for j in range(N) for i in range(M))
-    px, py = project(best[1], best[2], best[0])
-    body.append(
-        f'<g class="pk"><path d="M{px:.1f} {py - 4:.1f}V{py - 34:.1f}" stroke="{c["mark"]}" stroke-width=".8"/>'
-        f'<circle cx="{px:.1f}" cy="{py:.1f}" r="2.6" fill="{c["mark"]}"/>'
-        f'<text class="mono" x="{px:.1f}" y="{py - 52:.1f}" font-size="10.5" fill="{c["text"]}">highest cell: Sharpe {best[0]:.2f}</text>'
-        f'<text class="mono" x="{px:.1f}" y="{py - 39:.1f}" font-size="10.5" fill="{c["muted"]}">on the edge of the grid: not the answer</text></g>')
+    # what to read on it
+    label = "read the plateau, not the peak"
+    body.append(f'<g class="pk"><text class="mono" x="427" y="80" font-size="11.5" fill="{c["text"]}">{label}</text></g>')
 
     # the call that made it, then what it is
     body.append(f'<text class="co mono" x="775" y="44" font-size="10.5" fill="{c["muted"]}" text-anchor="end">'
@@ -189,7 +184,7 @@ def build(theme):
     mono_chars = "".join(sorted(set(
         'mbt.run_sweep(strategy, {"fast": ..., "slow": ...}, config, store) '
         f"{N * M} real backtests, not a drawing. EMA crossover, BTCUSDT 1h, 2023 to 2024, fees and slippage on. "
-        f"Height = in-sample Sharpe. slow EMA fast highest cell: Sharpe {best[0]:.2f} on the edge of the grid: not the answer 0123456789")))
+        f"Height = in-sample Sharpe. slow EMA fast {label} 0123456789")))
     fonts = font(HERE / "fonts" / "inter.woff2", "Inter", text_chars) + font(
         HERE / "fonts" / "jbmono.woff2", "JetBrains Mono", mono_chars)
 
