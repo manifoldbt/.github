@@ -130,7 +130,6 @@ def build(theme):
 
     css.append(fade("sk", 6.1))
     css.append(fade("ax", 6.3))
-    css.append(fade("pk", 6.9, .4))
     css.append(fade("co", .4))
     css.append(fade("cp", 6.5))
 
@@ -146,10 +145,6 @@ def build(theme):
         f'<g class="ax mono" font-size="9.5" fill="{c["dim"]}" text-anchor="middle">'
         f'<text transform="translate({lx - 5:.1f} {ly + 14:.1f}) rotate({ang:.1f})">slow EMA {SLOW[0]} to {SLOW[-1]}</text>'
         f'<text transform="translate({rx + 5:.1f} {ry + 14:.1f}) rotate({-ang:.1f})">fast EMA {FAST[0]} to {FAST[-1]}</text></g>')
-
-    # what to read on it
-    label = "read the plateau, not the peak"
-    body.append(f'<g class="pk"><text class="mono" x="427" y="80" font-size="11.5" fill="{c["text"]}">{label}</text></g>')
 
     # the call that made it, then what it is
     body.append(f'<text class="co mono" x="775" y="44" font-size="10.5" fill="{c["muted"]}" text-anchor="end">'
@@ -184,7 +179,7 @@ def build(theme):
     mono_chars = "".join(sorted(set(
         'mbt.run_sweep(strategy, {"fast": ..., "slow": ...}, config, store) '
         f"{N * M} real backtests, not a drawing. EMA crossover, BTCUSDT 1h, 2023 to 2024, fees and slippage on. "
-        f"Height = in-sample Sharpe. slow EMA fast {label} 0123456789")))
+        f"Height = in-sample Sharpe. slow EMA fast 0123456789")))
     fonts = font(HERE / "fonts" / "inter.woff2", "Inter", text_chars) + font(
         HERE / "fonts" / "jbmono.woff2", "JetBrains Mono", mono_chars)
 
