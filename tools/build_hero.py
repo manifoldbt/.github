@@ -27,11 +27,11 @@ THEMES = {
     "dark": dict(card="#0b0c10", line="#1e2030", text="#e8e9ed", muted="#8b8fa3", dim="#7d819e",
                  floor="#262a3d", pill="#12131a", mark="#ffffff",
                  ramp=["#1b2240", "#34488f", "#5b7ff5", "#a9bdfb"],
-                 zone=["#6f8ff7", "#8ea8f9", "#b4c6fc", "#e4eaff"], rest=["#12172d", "#1c2648", "#2b3a75", "#3a4f9e"], mesh="#0b0c10", skirt="#141725"),
+                 zone=["#6f8ff7", "#8ea8f9", "#b4c6fc", "#e4eaff"], mesh="#0b0c10", skirt="#141725"),
     "light": dict(card="#ffffff", line="#e2e4ec", text="#12131a", muted="#565b70", dim="#5f6478",
                   floor="#d5d8e4", pill="#f5f6fa", mark="#12131a",
                   ramp=["#dce3fa", "#a3b6f8", "#5b7ff5", "#2238a0"],
-                  zone=["#4f73ee", "#3a5cd8", "#2a46b4", "#182c80"], rest=["#f0f2fb", "#e2e7f9", "#d0d9f8", "#bcc9f7"], mesh="#ffffff", skirt="#eceef6"),
+                  zone=["#4f73ee", "#3a5cd8", "#2a46b4", "#182c80"], mesh="#ffffff", skirt="#eceef6"),
 }
 
 LOOP = 3.8                   # plays once, then stays on its last frame
@@ -131,7 +131,7 @@ def surface(c, css):
     css.append(fade("fl", 0.1))
     body.append(f'<g class="fl" stroke="{c["floor"]}" stroke-width=".6" fill="none">{"".join(floor)}</g>')
 
-    # the cells rise in the engine's enumeration order, then the plateau brightens and the rest recedes, in place,
+    # the cells rise in the engine's enumeration order, then the plateau changes color in place,
     # so that a ridge in front of them still hides them
     zone = plateau()
     cells = []
@@ -143,7 +143,7 @@ def surface(c, css):
             pts = [project(i, j, z[0]), project(i + 1, j, z[1]), project(i + 1, j + 1, z[2]), project(i, j + 1, z[3])]
             corners = sum((v, u) in zone for v, u in ((j, i), (j, i + 1), (j + 1, i + 1), (j + 1, i)))
             base = ramp(c["ramp"], t)
-            fill = ramp(c["zone"] if corners >= 2 else c["rest"], t)
+            fill = ramp(c["zone"], t) if corners >= 2 else base
             n = j * (M - 1) + i
             t0 = START + SPAN * n / ((N - 1) * (M - 1))
             name = f"q{n}"
