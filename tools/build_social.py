@@ -13,6 +13,7 @@ BG = "#0b0c10"
 
 svg = (HERE.parent / "profile" / "assets" / "hero-dark.svg").read_text(encoding="utf-8")
 # a thumbnail cannot carry the small print: keep the headline and the surface
+svg = re.sub(r'<g class="pk">.*?</g>', "", svg)
 svg = re.sub(r'<g class="cp mono".*?</g>', "", svg)
 svg = re.sub(r'<text class="co mono".*?</text>', "", svg)
 svg = re.sub(r'<rect x="\.5" y="\.5"[^>]*/>', "", svg, count=1)

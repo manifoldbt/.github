@@ -2,7 +2,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/manifoldbt/.github/HEAD/profile/assets/hero-dark.svg">
-  <img alt="Manifold-BT: sweep the grid, read the surface, check every fill. The Sharpe surface of 1,000 real EMA crossover backtests on BTCUSDT." src="https://raw.githubusercontent.com/manifoldbt/.github/HEAD/profile/assets/hero-light.svg" width="800">
+  <img alt="Manifold-BT: sweep the grid, read the surface, check every fill. The Sharpe surface of 225 real EMA crossover backtests on BTCUSDT, with its plateau marked." src="https://raw.githubusercontent.com/manifoldbt/.github/HEAD/profile/assets/hero-light.svg" width="800">
 </picture>
 
 [Website](https://www.manifoldbt.com) · [Docs](https://www.manifoldbt.com/documentation) · [Quick start](https://github.com/manifoldbt/manifoldbt#quick-start) · [Benchmarks](https://www.manifoldbt.com/benchmarks) · [Examples](https://github.com/manifoldbt/manifoldbt/tree/master/examples) · [Pricing](https://www.manifoldbt.com/#pricing) · [Discord](https://discord.gg/bvU6Wjc72d)
@@ -45,6 +45,6 @@ A backtest is a claim. Each of these runs on your machine, against the wheel you
 - **Parity.** [Entry price, exit price and exit reason](https://github.com/manifoldbt/manifoldbt/blob/master/python/tests/test_parity_vectorbt.py) asserted against vectorbt, on the wheel published to PyPI.
 - **Look-ahead.** [Corrupt every bar after a cut point](https://github.com/manifoldbt/manifoldbt/blob/master/examples/25_lookahead_trap.py) and require the equity before it to come back bit-identical.
 - **Replay.** Every result carries a manifest; `mbt.replay(manifest, strategy, store)` regenerates the run.
-- **This page.** The surface above is [a real sweep](https://github.com/manifoldbt/.github/blob/HEAD/tools/hero_surface.py).
+- **This page.** The surface above is [a real sweep](https://github.com/manifoldbt/.github/blob/HEAD/tools/hero_surface.py), and it runs on a fresh install.
 
 A reproduction showing a fill the engine gets wrong is the most useful [report](https://github.com/manifoldbt/manifoldbt/issues) this project can receive. Agents can read [llms.txt](https://www.manifoldbt.com/llms.txt). Research software, not financial advice.
