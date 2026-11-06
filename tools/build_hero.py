@@ -34,10 +34,9 @@ THEMES = {
                   zone=["#4f73ee", "#3a5cd8", "#2a46b4", "#182c80"], rest=["#f0f2fb", "#e2e7f9", "#d0d9f8", "#bcc9f7"], mesh="#ffffff", skirt="#eceef6"),
 }
 
-LOOP = 10.0
+LOOP = 3.8                   # plays once, then stays on its last frame
 START, SPAN = 0.3, 2.0       # the surface rises
 ZONE_ON, MARK_ON = 3.0, 3.4  # then the plateau lights up, then its label
-HOLD = 9.4
 PLATEAU_FLOOR = 1.1          # smoothed Sharpe that bounds the plateau
 CX, CY, DX, DY, ZS = 600.0, 132.0, 12.3, 6.3, 68.0
 
@@ -87,8 +86,8 @@ def pct(t):
 
 
 def fade(name, start, dur=0.3):
-    return (f"@keyframes {name}{{0%,{pct(start)}%{{opacity:0}}{pct(start + dur)}%,{pct(HOLD)}%{{opacity:1}}"
-            f"100%{{opacity:0}}}}.{name}{{animation:{name} {LOOP:g}s linear infinite}}")
+    return (f"@keyframes {name}{{0%,{pct(start)}%{{opacity:0}}{pct(start + dur)}%,100%{{opacity:1}}}}"
+            f".{name}{{animation:{name} {LOOP:g}s linear forwards}}")
 
 
 def poly(pts):
@@ -156,8 +155,8 @@ def surface(c, css):
             if lit:
                 frames += (f"{pct(ZONE_ON)}%{{opacity:1;transform:none{before}}}"
                            f"{pct(ZONE_ON + .3)}%{{opacity:1;transform:none{after}}}")
-            frames += f"{pct(HOLD)}%{{opacity:1;transform:none{after}}}100%{{opacity:0;transform:none{after}}}"
-            css.append(f"@keyframes {name}{{{frames}}}.{name}{{animation:{name} {LOOP:g}s cubic-bezier(.2,.7,.2,1) infinite}}")
+            frames += f"100%{{opacity:1;transform:none{after}}}"
+            css.append(f"@keyframes {name}{{{frames}}}.{name}{{animation:{name} {LOOP:g}s cubic-bezier(.2,.7,.2,1) forwards}}")
             cells.append((i + j, f'<polygon class="{name}" fill="{fill}" points="{poly(pts)}"/>'))
     cells.sort(key=lambda x: x[0])
     body.append(f'<g stroke="{c["mesh"]}" stroke-width=".5" stroke-opacity=".7">{"".join(x[1] for x in cells)}</g>')
